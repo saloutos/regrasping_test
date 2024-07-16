@@ -8,7 +8,6 @@ import termios
 import sys
 import os
 import time
-import csv
 from datetime import datetime as dt
 
 # initialization
@@ -17,15 +16,24 @@ init_settings = termios.tcgetattr(sys.stdin)
 
 # add object to model here
 xml_path = os.path.join(bg.assets.ASSETS_DIR, 'scene')
+
+obj_type = "cylinder"
+obj_pos = [0.23, 0.0, 0.05]
+obj_height = 0.06
+obj_radius = 0.03
+obj_mass = 0.2
+obj_inertia_xy = (1/4)*obj_mass*obj_radius**2 + 1/12*obj_mass*obj_height**2
+obj_inertia_z = (1/2)*obj_mass*obj_radius**2
+
 xml_string = """
 <mujoco model="scene">
     <include file=\"""" + xml_path + ".xml\"" + """/>
     <!-- CUBE -->
     <worldbody>
-        <body name="object" pos="0.23 0 0.05">
+        <body name="object" pos=\""""+str(obj_pos[0])+" "+str(obj_pos[1])+" "+str(obj_pos[2])+"""\">
             <joint type="free" name="object" group="3" stiffness="0" damping="0" frictionloss="0" armature="0"/>
-            <inertial pos="0 0 0" mass="0.2" diaginertia="0.00012 0.00012 0.00012"/>
-            <geom name="object" type="box" group="3" size="0.03 0.03 0.03" rgba="0.7 0.2 0.1 0.6" contype="1" conaffinity="1" condim="4" priority="2" friction="1 0.02 0.0001" solimp="0.95 0.99 0.001 0.5 2"  solref="0.002 1"/>
+            <inertial pos="0 0 0" mass=\""""+str(obj_mass)+"""\" diaginertia=\""""+str(obj_inertia_xy)+" "+str(obj_inertia_xy)+" "+str(obj_inertia_z)+"""\"/>
+            <geom name="object" type=\""""+obj_type+"""\" group="3" size=\""""+str(obj_radius)+" "+str(obj_height/2.0)+"""\" rgba="0.7 0.2 0.1 0.6" contype="1" conaffinity="1" condim="4" priority="2" friction="1 0.02 0.0001" solimp="0.95 0.99 0.001 0.5 2"  solref="0.002 1"/>
         </body>
     </worldbody>
     <option impratio="10" timestep="0.0005" integrator="implicitfast" cone="elliptic" solver="Newton" noslip_iterations="0">

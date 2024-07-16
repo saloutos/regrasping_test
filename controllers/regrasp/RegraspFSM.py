@@ -3,9 +3,9 @@ from controllers.base.FiniteStateMachine import *
 from .states.reset import *
 from .states.waiting import *
 from .states.execute_grasp import *
+from .states.regrasp import *
 from .states.lift_object import *
 from .states.hold_object import *
-from .states.release_object import *
 
 # define regrasp FSM class
 class RegraspFSM(FiniteStateMachine):
@@ -13,9 +13,9 @@ class RegraspFSM(FiniteStateMachine):
         states = [Reset(),
                 Waiting(),
                 ExecuteGrasp(),
+                Regrasp(),
                 LiftObject(),
-                HoldObject(),
-                ReleaseObject()] # Note: FSM will start in first state in states list above
+                HoldObject()] # Note: FSM will start in first state in states list above
         self.states = dict(zip([state.name for state in states], states))
         self.current_state = ""
         self.current_state_idx = 0
